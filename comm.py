@@ -44,7 +44,7 @@ def get_btdata(cur):
     except requests.exceptions.Timeout:
             print("Timeout while contacting to URL")
     except:
-        print ("An error occur while sending Bitcoin request:")
+        print ("An error occur while sending Bitcoin request...")
     finally:
         return False, response
     
