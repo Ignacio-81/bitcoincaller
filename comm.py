@@ -28,16 +28,24 @@ def get_btdata(cur):
     'X-CMC_PRO_API_KEY': '7351d04f-329e-4748-b137-28d0079459cb',
     }
 
-    session = Session()
-    session.headers.update(headers)
-    response = session.get(BITCOIN_API_URL, params=parameters)
-
-    if response.status_code == 200:
-              
-        response_json = response.json()
-        BT_info = response_json["data"]['BTC']['quote'][cur]
-        return True, BT_info
-    else:
+    try: 
+        session = Session()
+        session.headers.update(headers)
+        response = session.get(BITCOIN_API_URL, params=parameters)
+        if response.status_code == 200:
+            response_json = response.json()
+            BT_info = response_json["data"]['BTC']['quote'][cur]
+            return True, BT_info
+        else:
+            return False, response
+    
+    except requests.exceptions.ConnectionError as err:
+        print ("An error occur while sending Bitcoin request: {}".format(err))
+    except requests.exceptions.Timeout:
+            print("Timeout while contacting to URL")
+    except:
+        print ("An error occur while sending Bitcoin request:")
+    finally:
         return False, response
     
 def post_IFTTT_event(event, bc_data):
