@@ -24,8 +24,8 @@ def loop():
         print("[1] Ask bitcoin info USD")
         print("[2] Ask bitcoin info ARS")
         print("[3] Send BT to Mobile   ")
-        print("[4] Notification process")
-        print("[5] Empty               ")
+        print("[4] Mobile Notification ")
+        print("[5] E-Mail Notification ")
         print("[6] Exit                ")
         print("========================")
 
