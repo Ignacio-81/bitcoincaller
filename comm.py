@@ -7,7 +7,7 @@ from requests import Request, Session
 import json
 
 IFTTT_WEBHOOKS_URL = 'https://maker.ifttt.com/trigger/{}/with/key/chbJqdWxbCqnuMR2gwGD0XTxVH8-qsu2yWU7_bTnn5x'
-BITCOIN_API_URL = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest' 
+BITCOIN_API_URL = 'https://000pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest' 
 
 def get_btdata(cur):
     """ Json BT_info is:
@@ -28,17 +28,20 @@ def get_btdata(cur):
     'X-CMC_PRO_API_KEY': '7351d04f-329e-4748-b137-28d0079459cb',
     }
 
-    session = Session()
-    session.headers.update(headers)
-    response = session.get(BITCOIN_API_URL, params=parameters)
-
-    if response.status_code == 200:
-              
-        response_json = response.json()
-        BT_info = response_json["data"]['BTC']['quote'][cur]
-        return True, BT_info
-    else:
-        return False, response
+    try: 
+        session = Session()
+        session.headers.update(headers)
+        response = session.get(BITCOIN_API_URL, params=parameters)
+        if response.status_code == 200:
+            response_json = response.json()
+            response = response_json["data"]['BTC']['quote'][cur]
+            return True, response
+        else:
+            return False, response
+    
+    except requests.exceptions.RequestException:
+        raise ConnectionError ('Error While trying to connect to BitCoin URL..') 
+       
     
 def post_IFTTT_event(event, bc_data):
     # Make sure that your key is in the URL
@@ -48,13 +51,16 @@ def post_IFTTT_event(event, bc_data):
         'value3':"{0:.2%}".format(bc_data['percent_change_7d']/100)
         }
     ifttt_event_url = IFTTT_WEBHOOKS_URL.format(event)
-    response = requests.post(ifttt_event_url, json=data) 
-    if response.status_code == 200:
-        print('IFTTT Request Sended OK...')
-        return True
-    else:
-        print('Error while sending IFTTT request: {}'.format(response))
-        return False
-        
+    try:
+        response = requests.post(ifttt_event_url, json=data) 
+        if response.status_code == 200:
+            response = 'IFTTT'
+            return True , response
+        else:
+            #print('Error while sending IFTTT request: {}'.format(response))
+            return False , response
+
+    except requests.exceptions.RequestException:
+        raise ConnectionError ('Error While trying to connect to IFTTT URL..')         
     
 
