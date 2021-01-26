@@ -7,7 +7,7 @@ from requests import Request, Session
 import json
 
 IFTTT_WEBHOOKS_URL = 'https://maker.ifttt.com/trigger/{}/with/key/chbJqdWxbCqnuMR2gwGD0XTxVH8-qsu2yWU7_bTnn5x'
-BITCOIN_API_URL = 'https://000pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest' 
+BITCOIN_API_URL = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest' 
 
 def get_btdata(cur):
     """ Json BT_info is:
