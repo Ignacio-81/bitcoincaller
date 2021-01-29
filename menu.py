@@ -98,16 +98,21 @@ def loop():
 
 
             if option == '5':
-                print("Empty...\n")
-                
+                stat = mailhand.send_mail()
+                if stat : print ( "mail with BC Information sended OK!...")
+
             if option == '6':
                 print("Closing app, Bye!...\n")
                 break
         
         except ConnectionError as err:
-            print('Communication Error: ', err)            
+            print('Communication Error: ', err)
+        
+        except UnboundLocalError as err:
+            print('An error has occurred ', err) 
+        
+        except Exception as err:
+            print(err)
         
         finally :     
             input("\nPress ENTER to continue...")
-
-    
