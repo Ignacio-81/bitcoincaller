@@ -60,7 +60,7 @@ def post_IFTTT_event(event, bc_data):
             #print('Error while sending IFTTT request: {}'.format(response))
             return False , response
 
-    except requests.exceptions.RequestException:
-        raise ConnectionError ('Error While trying to connect to IFTTT URL..')         
+    except requests.exceptions.RequestException as err:
+        raise ConnectionError ('Error While trying to connect to IFTTT URL..'+ err)         
     
 
