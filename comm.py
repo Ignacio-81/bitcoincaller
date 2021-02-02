@@ -2,6 +2,7 @@
 - Bit coin comunication and data format with CoinMakerCap API https://coinmarketcap.com/api/
 - IFTTT Service comunication (information to mobile) https://ifttt.com/home
 """
+"TODO: manejar la lista de informaciones con busqueda automatica"
 import requests
 from requests import Request, Session
 import json
