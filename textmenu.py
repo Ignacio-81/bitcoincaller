@@ -5,27 +5,13 @@ import mailhand
 import resident
 import os
 import platform
+from helpers import show_bc_screen
 
 def clear():
     if platform.system() == "Windows":
         os.system('cls')
     else:
         os.system('clear')
-
-def show_bc_screen (stat, data, **args):
-    if stat: 
-        if data == 'IFTTT': 
-            print('IFTTT Request Sended OK...')    
-        else: 
-            #print('Answer OK from server') 
-            print("Bitcoin value is: {0:,.2f} ".format(data['price']) + args['cur'])
-            print("Last 24hs variation is: {0:.2%}".format(data['percent_change_24h']/100))
-            print("Last 7days variation is: {0:.2%}".format(data['percent_change_7d']/100))
-    else: 
-        if data == 'IFTTT':
-            print('Error while sending IFTTT request: {}'.format(data))
-        else:    
-            print('Error while requesting info to BC URL:', data)
 
 def loop():
     
@@ -61,7 +47,7 @@ def loop():
             if option == '3':
                 print("Select the currency -> 1.USD / 2.ARS")
                 opt2 = input("> ")
-                print("Sending BC information to Mobile...\n")
+                print(" \n")
                 if opt2 == '1':
                     cur = 'USD'
                     
@@ -98,7 +84,10 @@ def loop():
 
 
             if option == '5':
-                stat = mailhand.send_mail()
+                sender_address = input('\nPlease enter your gmail account: ')
+                sender_pass = getpass('\nPlease enter your password:')
+                receiver_address = input('\nPlease enter destination email: ')
+                stat = mailhand.send_mail(sender_address, sender_pass, receiver_address)
                 if stat : print ( "mail with BC Information sended OK!...")
 
             if option == '6':

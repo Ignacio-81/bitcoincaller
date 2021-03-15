@@ -2,11 +2,15 @@
 
 import comm
 import mailhand
-import menu
+import textmenu
+import wmenu
+import wx
 
 def main():
-
-    menu.loop()
+    frame = wx.App()
+    wmenu.MainWindow(None, 'BitCoin Caller')
+    frame.MainLoop()
+    #menu.loop()
     
 if __name__ == "__main__":
 

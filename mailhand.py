@@ -1,12 +1,17 @@
+"""
+Mail sender using Google mail system.
+Input Parameters -> gmail user , password, destination
+"""
+
 import smtplib
 import comm
 from getpass import getpass
-from menu import show_bc_screen
+from helpers import show_bc_screen
 
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-def send_mail():
+def send_mail(add, pas, des):
     session = None
     try:
         #The mail addresses and password
@@ -17,14 +22,12 @@ def send_mail():
         #Create SMTP session for sending the mail
         session = smtplib.SMTP('smtp.gmail.com', 587) #use gmail with port
         session.starttls() #enable security
-        sender_address = input('\nPlease enter your gmail account: ')
-        sender_address += '@gmail.com'
-        sender_pass = getpass('\nPlease enter your password:')
-        receiver_address = input('\nPlease enter destination email: ')
+        add += '@gmail.com'
+
         #Setup the MIME
         message = MIMEMultipart()
-        message['From'] = sender_address
-        message['To'] = receiver_address
+        message['From'] = add
+        message['To'] = des
         message['Subject'] = 'Bitcoin Notification...'   #The subject line
         #The body and the attachments for the mail
         mail_content = """Hello,
@@ -40,9 +43,9 @@ def send_mail():
         """.format(data['price'], data['percent_change_24h']/100, data['percent_change_7d']/100, data['last_updated'])
         
         message.attach(MIMEText(mail_content, 'plain'))
-        session.login(sender_address, sender_pass) #login with mail_id and password
+        session.login(add, pas) #login with mail_id and password
         text = message.as_string()
-        session.sendmail(sender_address, receiver_address, text)
+        session.sendmail(add, des, text)
       
     except smtplib.SMTPAuthenticationError :
         print("\nThe username and/or password you entered is incorrect")
@@ -63,6 +66,6 @@ def send_mail():
     finally:
         if session is not None:
             session.quit()
-            del sender_address, sender_pass
+            del add, pas
             return True    
  
