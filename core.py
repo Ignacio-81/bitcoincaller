@@ -1,16 +1,22 @@
 """ FIchero principal del programa """
 
-import comm
-import mailhand
-import textmenu
-import wmenu
+#TO USE FOR COMMAND LINE VERSION:
+#import textmenu
+
+#TO USE FOR WINDOWS VERSION:
 import wx
+import wmenu
+
 
 def main():
+    #COde to RUN on windows interface
+
     frame = wx.App()
     wmenu.MainWindow(None, 'BitCoin Caller')
     frame.MainLoop()
-    #menu.loop()
+
+    #Line to RUN on Command line Menu
+    #textmenu.loop()
     
 if __name__ == "__main__":
 

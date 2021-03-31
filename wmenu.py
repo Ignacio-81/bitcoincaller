@@ -6,10 +6,15 @@ import comm
 import resident
 import mailhand
 
+import sys
+import traceback
+import wx.lib.agw.genericmessagedialog as GMD
+
 class MainWindow (wx.Frame):
-    
+ 
     def __init__(self, parent, title):
         super(MainWindow,self).__init__(parent, title=title, size=(400, 300))
+        sys.excepthook = ExceptionHook
         self.Centre()
         self.bot = resident.watchbot(_running = False)
     
@@ -124,7 +129,7 @@ class MainWindow (wx.Frame):
         panelsizer.Add(self.bn03, pos=(4,1), flag=wx.EXPAND)
         self.bcAutonot.SetSizer(panelsizer)
         self.bcAutonot.Hide()
-   
+
     #Events
         self.Bind(wx.EVT_MENU, lambda e: self.sendNot (e, 'USD'), bcinfousd )
         self.Bind(wx.EVT_MENU, lambda e: self.sendNot (e, 'ARS'), bcinfoars )
@@ -146,22 +151,25 @@ class MainWindow (wx.Frame):
         #self.sizer.SetSizeHints(self.sizer)
         self.SetSizer(self.sizer)     
         self.Show(True)
-    
+
+    """
     def Onaskbcinfo (self, e, cur):
         obj = e.GetEventObject()
         if self.sendMpanel.IsShown : self.sendMpanel.Hide()
         stat, data = comm.get_btdata(cur) 
+    
         if cur == 'USD':
             self.textC.Label = 'USD Information:'
         else:
             self.textC.Label = 'ARS Information:'
-  
+
         self.textoVV.Label = '{0:,.2f}'.format(data['price'])
         self.texto24V.Label = '{0:.2%}'.format(data['percent_change_24h']/100)
         self.texto7dV.Label = '{0:.2%}'.format(data['percent_change_7d']/100)
+     
         self.bcInfopanel.Show()
         self.Layout()
-    
+    """
     def sendNot (self, e, op):
         obj = e.GetEventObject()
         self.bcInfopanel.Hide()
@@ -180,8 +188,9 @@ class MainWindow (wx.Frame):
             self.textoVV.Label = '{0:,.2f}'.format(data['price'])
             self.texto24V.Label = '{0:.2%}'.format(data['percent_change_24h']/100)
             self.texto7dV.Label = '{0:.2%}'.format(data['percent_change_7d']/100)
-            self.bcInfopanel.Show()
 
+            self.bcInfopanel.Show()
+        
         if op == 'notMobile' :
             self.sendMpanel.Show()
         
@@ -198,7 +207,7 @@ class MainWindow (wx.Frame):
                 self.bn02.Hide()
                 self.bn03.Show()
             self.bcAutonot.Show()
- 
+
         self.Layout()
 
     def onButton (self, e):
@@ -217,25 +226,54 @@ class MainWindow (wx.Frame):
             self.bot = resident.watchbot(True, time, p_val, mval)
 
         if obj.Name == 'stoprob':
-             self.bot.terminate()   
+            self.bot.terminate()   
         
         if obj.Name == 'sendMail':
             sender_address = self.textGu.GetValue()
             sender_pass = self.textPa.GetValue()
             receiver_address = self.textDes.GetValue()
             stat = mailhand.send_mail(sender_address, sender_pass, receiver_address)
-            if stat : wx.MessageBox( "mail with BC Information sended OK!...", 'E-Mail Notification', wx.OK )    
+            if stat : 
+                wx.MessageBox( "Mail with BC Information sended OK!...", 'E-Mail Notification', wx.OK )    
 
         if self.bcInfopanel.IsShown : self.bcInfopanel.Hide()
         if self.sendMpanel.IsShown : self.sendMpanel.Hide()
         if self.bcAutonot.IsShown : self.bcAutonot.Hide()
         
     def Onquit(self, e):
-        self.Close()
-    
+            self.Close()
 
+"""
 class askbcwindow(wx.Frame):
     def __init__(self, parent):
         wx.Frame.__init__(self, parent)
         panel = wx.Panel(self, -1)
         txt = wx.StaticText(panel, label='Entramos!')
+"""
+class ExceptionDialog(GMD.GenericMessageDialog):
+    """"""
+    #----------------------------------------------------------------------
+    def __init__(self, msg):
+        """Constructor"""
+        GMD.GenericMessageDialog.__init__(self, None, msg, "Error message:",
+                                          wx.OK|wx.ICON_WARNING)
+        
+#----------------------------------------------------------------------
+def ExceptionHook(etype, value, trace):
+    """
+    Handler for all unhandled exceptions.
+    :param `etype`: the exception type (`SyntaxError`, `ZeroDivisionError`, etc...);
+    :type `etype`: `Exception`
+    :param string `value`: the exception error message;
+    :param string `trace`: the traceback header, if any (otherwise, it prints the
+     standard Python header: ``Traceback (most recent call last)``.
+    """
+    frame = wx.GetApp().GetTopWindow()
+
+#    tmp = traceback.format_exception(etype, value, trace)
+    tmp = traceback.format_exception_only(etype, value)
+    exception = "".join(tmp)
+    dlg = ExceptionDialog(exception)
+
+    dlg.ShowModal()
+    dlg.Destroy()    
