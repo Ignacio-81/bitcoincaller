@@ -3,6 +3,9 @@ This module has auxiliary function for the program.
 """
 
 def show_bc_screen (stat, data, **args):
+
+#Screen Information for Command Line version
+
     if stat: 
         if data == 'IFTTT': 
             print('IFTTT Request Sended OK...')    
@@ -16,3 +19,4 @@ def show_bc_screen (stat, data, **args):
             print('Error while sending IFTTT request: {}'.format(data))
         else:    
             print('Error while requesting info to BC URL:', data)
+    
